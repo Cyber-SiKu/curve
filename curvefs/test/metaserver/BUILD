@@ -14,9 +14,43 @@
 #  limitations under the License.
 #
 
+load(
+    "//:copts.bzl",
+    "GCC_FLAGS",
+    "GCC_TEST_FLAGS",
+)
+
+COPTS = [
+    "-DGFLAGS=gflags",
+    "-DOS_LINUX",
+    "-DSNAPPY",
+    "-DHAVE_SSE42",
+    "-DNDEBUG",
+    "-fno-omit-frame-pointer",
+    "-momit-leaf-frame-pointer",
+    "-msse4.2",
+    "-pthread",
+    "-Wsign-compare",
+    "-Wno-unused-parameter",
+    "-Wno-unused-variable",
+    "-Woverloaded-virtual",
+    "-Wnon-virtual-dtor",
+    "-Wno-missing-field-initializers",
+    "-std=c++11",
+    "-g",
+]
+
 cc_test(
     name = "curvefs_metaserver_test",
-    srcs = glob(["*.cpp", "*.h"]),
+    srcs = glob([
+        "*.cpp", 
+        "*.h"], 
+        exclude = [
+            "mock_client_s3.h",
+            "metaserver_s3_adaptor_test.cpp",
+            "mock_metaserver_s3_adaptor.h",
+        ]
+    ),
     copts = ["-g","-DHAVE_ZLIB=1"],
     deps = [
             "//curvefs/src/metaserver:curvefs_metaserver_lib",
@@ -24,5 +58,39 @@ cc_test(
             "@com_google_googletest//:gtest",
             "//external:brpc",
             "//src/common:curve_common",
+    ],
+)
+
+# s3 adaptor
+cc_test(
+    name = "metaserver_s3_adaptor_test",
+    srcs = glob([
+        "mock_metaserver_s3.h",
+        "metaserver_s3_adaptor_test.h",
+        "metaserver_s3_adaptor_test.cpp",
+        "curvefs/test/client/mock_client_s3.h",
+        "mock_metaserver_s3_adaptor.h",
+    ]),
+    copts = COPTS,
+    defines = ["UNIT_TEST"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_googletest//:gtest",
+        "@com_google_googletest//:gtest_main",
+        "//external:brpc",
+        "//external:glog",
+        "//external:gflags",
+        "//include/client:include_client",
+        "//src/common:curve_s3_adapter",
+        "//src/client:curve_client",
+        "//curvefs/src/client:fuse_client_lib",
+        "//curvefs/src/metaserver:metaserver_s3_lib",
+        "//curvefs/test/client:client_s3_test_lib",
+        "//test/client/mock:client_mock_lib",
+    ],
+    linkopts = [
+        "-lfuse3",
+        "-lpthread",
+        "-L/usr/local/lib/x86_64-linux-gnu",
     ],
 )
