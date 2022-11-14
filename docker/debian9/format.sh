@@ -3,4 +3,4 @@
 # Copyright (C) 2021 Jingli Chen (Wine93), NetEase Inc.
 
 ############################  MAIN()
-sleep 10000
+sleep 100

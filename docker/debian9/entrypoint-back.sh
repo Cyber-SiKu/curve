@@ -6,6 +6,7 @@
 g_role=""
 g_args=""
 g_prefix=""
+g_preexec=""
 g_binary=""
 g_start_args=""
 
@@ -67,7 +68,7 @@ function get_options() {
 }
 
 function prepare() {
-    g_prefix="/curvefs/$g_role"
+    g_prefix="/curvebs/$g_role"
     conf_path="$g_prefix/conf/$g_role.conf"
 
     case $g_role in
@@ -76,19 +77,24 @@ function prepare() {
             g_start_args="--config-file $conf_path"
             ;;
         mds)
-            g_binary="$g_prefix/sbin/curvefs-mds"
+            g_binary="$g_prefix/sbin/curvebs-mds"
             g_start_args="--confPath $conf_path"
             ;;
-        metaserver)
-            g_binary="$g_prefix/sbin/curvefs-metaserver"
-            g_start_args="--confPath $conf_path"
+        chunkserver)
+            g_binary="$g_prefix/sbin/curvebs-chunkserver"
+            g_start_args="--conf=$conf_path"
             ;;
-        client)
-            g_binary="$g_prefix/sbin/curve-fuse"
-            g_start_args="--confPath $conf_path"
+        snapshotclone)
+            g_preexec="/usr/sbin/nginx -c $g_prefix/conf/nginx.conf"
+            g_binary="$g_prefix/sbin/curvebs-snapshotclone"
+            g_start_args="--conf=$conf_path"
+            ;;
+        nebd)
+            g_binary="$g_prefix/sbin/nebd-server"
+            g_start_args="-confPath=$g_prefix/conf/nebd-server.conf -log_dir=$g_prefix/logs"
             ;;
         monitor)
-            g_binary="python3"
+            g_binary="python"
             g_start_args="target_json.py"
             ;;
         *)
@@ -106,8 +112,6 @@ function create_directory() {
     chmod 700 "$g_prefix/data"
     if [ "$g_role" == "etcd" ]; then
         mkdir -p "$g_prefix/data/wal"
-    elif [ "$g_role" == "metaserver" ]; then
-        mkdir -p "$g_prefix/data/storage"
     elif [ "$g_role" == "client" ]; then
         mkdir -p "$g_prefix/mnt"
     fi
@@ -119,6 +123,7 @@ function main() {
     prepare
     create_directory
     [[ $(command -v crontab) ]] && cron
+    [[ ! -z $g_preexec ]] && $g_preexec
     if [ $g_role == "etcd" ]; then
         exec $g_binary $g_start_args >>$g_prefix/logs/etcd.log 2>&1
     elif [ $g_role == "monitor" ]; then
@@ -127,8 +132,7 @@ function main() {
     else
         exec $g_binary $g_start_args
     fi
-
 }
 
 ############################  MAIN()
-sleep 100
+main "$@"

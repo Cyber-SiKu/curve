@@ -1,10 +1,11 @@
 FROM opencurvedocker/curve-base:debian9
 ENV TZ=Asia/Shanghai
-RUN mkdir -p /curvebs /etc/curve /etc/nebd /core
+RUN mkdir -p /curvebs /etc/curve /etc/nebd /core /root/curvebs/conf/
 COPY curvebs /curvebs
-COPY entrypoint.sh /
+COPY entrypoint.sh entrypoint-back.sh /
 COPY curvebs/tools/sbin/curve_ops_tool curvebs/nbd/sbin/curve-nbd /usr/bin/
 COPY libaws-cpp-sdk-core.so /usr/lib/
 COPY libaws-cpp-sdk-s3-crt.so /usr/lib/
+COPY format.sh /curvebs/tools/sbin/
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
