@@ -41,7 +41,7 @@ class SnapshotCloneServerTest : public ::testing::Test {
         options_->addr = kSnapshotCloneServerIpPort;
         options_->snapshotPoolThreadNum = 8;
         options_->snapshotTaskManagerScanIntervalMs = 1000;
-        options_->chunkSplitSize = 1048576;
+        options_->chunkSplitSize = 8388608;
         options_->checkSnapshotStatusIntervalMs = 1000;
         options_->maxSnapshotLimit = 64;
         options_->snapshotCoreThreadNum = 8;
@@ -61,6 +61,17 @@ class SnapshotCloneServerTest : public ::testing::Test {
 
         server_ = new SnapshotCloneServerModule();
         server_->Start(*options_);
+
+        cluster_ = new CurveCluster();
+        ASSERT_NE(nullptr, cluster_);
+        system(std::string("rm -rf ExcSCSTest.etcd").c_str());
+        pid_t pid = cluster_->StartSingleEtcd(1, kEtcdClientIpPort,
+            kEtcdPeerIpPort,
+            std::vector<std::string>{ "--name=ExcSCSTest"});
+        LOG(INFO) << "etcd 1 started on " << kEtcdPeerIpPort
+                  << ", pid = " << pid;
+        ASSERT_GT(pid, 0);
+        cluster_->InitSnapshotCloneMetaStoreEtcd(kEtcdClientIpPort);
     }
 
     static void TearDownTestCase() {

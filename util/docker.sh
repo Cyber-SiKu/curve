@@ -27,21 +27,13 @@ print_title() {
 ############################ FUNCTIONS
 
 get_options() {
-    local args=`getopt -o lorh --long list,only:,release: -n "$0" -- "$@"`
+    local args=`getopt -o ldorh --long os: -n "$0" -- "$@"`
     eval set -- "${args}"
     while true
     do
         case "$1" in
-            -l|--list)
-                g_list=1
-                shift 1
-                ;;
-            -o|--only)
-                g_target=$2
-                shift 2
-                ;;
-            -r|--release)
-                g_release=$2
+            --os)
+                g_os=$2
                 shift 2
                 ;;
             -h)
@@ -62,7 +54,7 @@ get_options() {
 main() {
     get_options "$@"
 
-    sudo docker run --rm -w /curve --user $(id -u ${USER}):$(id -g ${USER}) -v $(pwd):/curve -v ${HOME}:${HOME} -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/shadow:/etc/shadow:ro --privileged opencurvedocker/curve-base:build-$g_os bash util/build_in_image.sh "$@"
+    sudo docker run -it --rm -w $(pwd) -v $(pwd):$(pwd) -v ${HOME}:${HOME}  --user $(id -u ${USER}):$(id -g ${USER}) -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/sudoers.d/:/etc/sudoers.d/ -v /etc/sudoers:/etc/sudoers:ro -v /etc/shadow:/etc/shadow:ro -v /var/run/docker.sock:/var/run/docker.sock -v /root/.docker:/root/.docker --ulimit core=-1 --privileged opencurvedocker/curve-base:build-$g_os bash
 }
 
 ############################  MAIN()
