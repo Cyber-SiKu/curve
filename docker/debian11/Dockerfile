@@ -1,7 +1,7 @@
 FROM opencurvedocker/curve-base:debian11
 ENV TZ=Asia/Shanghai
-COPY --from=opencurvedocker/curve-base:curve-tgt-debian11 /curve-tgt/  /curve-tgt/
-COPY --from=opencurvedocker/curve-base:curve-tgt-debian11 /curve/curve-sdk /curve-tgt/curve-sdk
+COPY --from=opencurvedocker/curve-base:curve-tgt-debian11-release1.5 /curve-tgt/  /curve-tgt/
+COPY --from=opencurvedocker/curve-base:curve-tgt-debian11-release1.5 /curve/curve-sdk /curve-tgt/curve-sdk
 RUN cd /curve-tgt/curve-sdk && \
     cp -f lib/* /usr/lib && \
     cp -f bin/* /usr/bin && \

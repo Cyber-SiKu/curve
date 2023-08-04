@@ -61,17 +61,6 @@ class SnapshotCloneServerTest : public ::testing::Test {
 
         server_ = new SnapshotCloneServerModule();
         server_->Start(*options_);
-
-        cluster_ = new CurveCluster();
-        ASSERT_NE(nullptr, cluster_);
-        system(std::string("rm -rf ExcSCSTest.etcd").c_str());
-        pid_t pid = cluster_->StartSingleEtcd(1, kEtcdClientIpPort,
-            kEtcdPeerIpPort,
-            std::vector<std::string>{ "--name=ExcSCSTest"});
-        LOG(INFO) << "etcd 1 started on " << kEtcdPeerIpPort
-                  << ", pid = " << pid;
-        ASSERT_GT(pid, 0);
-        cluster_->InitSnapshotCloneMetaStoreEtcd(kEtcdClientIpPort);
     }
 
     static void TearDownTestCase() {
