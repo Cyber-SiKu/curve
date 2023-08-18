@@ -609,7 +609,8 @@ func AddBsChunkServerAddressSliceRequiredFlag(cmd *cobra.Command) {
 // get stingslice flag
 func GetBsFlagStringSlice(cmd *cobra.Command, flagName string) []string {
 	var value []string
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetStringSlice(flagName)
 	} else {
 		value = viper.GetStringSlice(BSFLAG2VIPER[flagName])
@@ -620,8 +621,9 @@ func GetBsFlagStringSlice(cmd *cobra.Command, flagName string) []string {
 // get string flag
 func GetBsFlagString(cmd *cobra.Command, flagName string) string {
 	var value string
-	if cmd.Flag(flagName).Changed {
-		value = cmd.Flag(flagName).Value.String()
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
+		value = pflg.Value.String()
 	} else {
 		value = viper.GetString(BSFLAG2VIPER[flagName])
 	}
@@ -631,8 +633,9 @@ func GetBsFlagString(cmd *cobra.Command, flagName string) string {
 // GetBsFlagUint32 get uint32 flag
 func GetBsFlagUint32(cmd *cobra.Command, flagName string) uint32 {
 	var value string
-	if cmd.Flag(flagName).Changed {
-		value = cmd.Flag(flagName).Value.String()
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
+		value = pflg.Value.String()
 	} else {
 		value = viper.GetString(BSFLAG2VIPER[flagName])
 	}
@@ -647,7 +650,8 @@ func GetBsFlagUint32(cmd *cobra.Command, flagName string) uint32 {
 // get uint64 flag
 func GetBsFlagUint64(cmd *cobra.Command, flagName string) uint64 {
 	var value uint64
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetUint64(flagName)
 	} else {
 		value = viper.GetUint64(BSFLAG2VIPER[flagName])
@@ -657,7 +661,8 @@ func GetBsFlagUint64(cmd *cobra.Command, flagName string) uint64 {
 
 func GetBsFlagInt64(cmd *cobra.Command, flagName string) int64 {
 	var value int64
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetInt64(flagName)
 	} else {
 		value = viper.GetInt64(BSFLAG2VIPER[flagName])
@@ -667,13 +672,18 @@ func GetBsFlagInt64(cmd *cobra.Command, flagName string) int64 {
 
 // determine whether the flag is changed
 func GetBsFlagChanged(cmd *cobra.Command, flagName string) bool {
-	return cmd.Flag(flagName).Changed
+	pflg := cmd.Flag(flagName)
+	if pflg == nil {
+		return false
+	}
+	return pflg.Changed
 }
 
 // get mdsaddr
 func GetBsAddrSlice(cmd *cobra.Command, addrType string) ([]string, *cmderror.CmdError) {
 	var addrsStr string
-	if cmd.Flag(addrType).Changed {
+	pflg := cmd.Flag(addrType)
+	if pflg != nil && pflg.Changed {
 		addrsStr = cmd.Flag(addrType).Value.String()
 	} else {
 		addrsStr = viper.GetString(BSFLAG2VIPER[addrType])
@@ -722,7 +732,8 @@ func GetBsSnapshotDummyAddrSlice(cmd *cobra.Command) ([]string, *cmderror.CmdErr
 
 func GetBsFlagBool(cmd *cobra.Command, flagName string) bool {
 	var value bool
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetBool(flagName)
 	} else {
 		value = viper.GetBool(BSFLAG2VIPER[flagName])
@@ -736,7 +747,8 @@ func AddBsClusterMapRequiredFlag(cmd *cobra.Command) {
 
 func GetBsFlagDuration(cmd *cobra.Command, flagName string) time.Duration {
 	var value time.Duration
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetDuration(flagName)
 	} else {
 		value = viper.GetDuration(BSFLAG2VIPER[flagName])
@@ -746,7 +758,8 @@ func GetBsFlagDuration(cmd *cobra.Command, flagName string) time.Duration {
 
 func GetBsFlagInt32(cmd *cobra.Command, flagName string) int32 {
 	var value int32
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetInt32(flagName)
 	} else {
 		value = viper.GetInt32(BSFLAG2VIPER[flagName])

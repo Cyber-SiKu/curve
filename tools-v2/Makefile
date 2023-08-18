@@ -11,13 +11,13 @@ PROTOC_GEN_GO_GRPC_VERSION= "v1.2"
 GOPROXY     :=https://goproxy.cn,direct
 GOOS        := $(if $(GOOS),$(GOOS),$(shell go env GOOS))
 GOARCH      := $(if $(GOARCH),$(GOARCH),$(shell go env GOARCH))
-CGO_LDFLAGS := "-static"
-CC          := musl-gcc
+# CGO_LDFLAGS := "-static"
+# CC          := musl-gcc
 
 GOENV := GO111MODULE=on
 GOENV += GOPROXY=$(GOPROXY)
-GOENV += CC=$(CC)
-GOENV += CGO_ENABLED=1 CGO_LDFLAGS=$(CGO_LDFLAGS)
+# GOENV += CC=$(CC)
+# GOENV += CGO_ENABLED=1 CGO_LDFLAGS=$(CGO_LDFLAGS)
 GOENV += GOOS=$(GOOS) GOARCH=$(GOARCH)
 
 # go
@@ -31,9 +31,9 @@ DAEMON_OUTPUT := sbin/daemon
 VERSION_FLAG := -X github.com/opencurve/curve/tools-v2/pkg/cli/command/version.Version=$(version)
 
 # build flags
-CGO_BUILD_LDFLAGS := -s -w -linkmode external
-CGO_BUILD_LDFLAGS += -extldflags "-static -fpic"
-CGO_BUILD_FLAG += -ldflags '$(CGO_BUILD_LDFLAGS) $(VERSION_FLAG)'
+# CGO_BUILD_LDFLAGS := -s -w -linkmode external
+# CGO_BUILD_LDFLAGS += -extldflags "-static -fpic"
+# CGO_BUILD_FLAG += -ldflags '$(CGO_BUILD_LDFLAGS) $(VERSION_FLAG)'
 
 BUILD_FLAGS := -a
 BUILD_FLAGS += -trimpath
@@ -43,12 +43,12 @@ BUILD_FLAGS += $(EXTRA_FLAGS)
 # debug flags
 GCFLAGS := "all=-N -l"
 
-CGO_DEBUG_LDFLAGS := -linkmode external
-CGO_DEBUG_LDFLAGS += -extldflags "-static -fpic"
-CGO_DEBUG_FLAG += -ldflags '$(CGO_DEBUG_LDFLAGS) $(VERSION_FLAG)'
+# CGO_DEBUG_LDFLAGS := -linkmode external
+# CGO_DEBUG_LDFLAGS += -extldflags "-static -fpic"
+# CGO_DEBUG_FLAG += -ldflags '$(CGO_DEBUG_LDFLAGS) $(VERSION_FLAG)'
 
 DEBUG_FLAGS := -gcflags=$(GCFLAGS)
-DEBUG_FLAGS += $(CGO_DEBUG_FLAG)
+# DEBUG_FLAGS += $(CGO_DEBUG_FLAG)
 
 # packages
 PACKAGES := $(PWD)/cmd/curve/main.go

@@ -146,6 +146,7 @@ var (
 	FLAG2VIPER = map[string]string{
 		RPCTIMEOUT:             VIPER_GLOBALE_RPCTIMEOUT,
 		RPCRETRYTIMES:          VIPER_GLOBALE_RPCRETRYTIMES,
+		SO:                     VIPER_GLOBALE_SO,
 		CURVEFS_MDSADDR:        VIPER_CURVEFS_MDSADDR,
 		CURVEFS_MDSDUMMYADDR:   VIPER_CURVEFS_MDSDUMMYADDR,
 		CURVEFS_ETCDADDR:       VIPER_CURVEFS_ETCDADDR,
@@ -385,8 +386,9 @@ func GetAddrSlice(cmd *cobra.Command, addrType string) ([]string, *cmderror.CmdE
 
 func GetFlagString(cmd *cobra.Command, flagName string) string {
 	var value string
-	if cmd.Flag(flagName).Changed {
-		value = cmd.Flag(flagName).Value.String()
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
+		value = pflg.Value.String()
 	} else {
 		value = viper.GetString(FLAG2VIPER[flagName])
 	}
@@ -395,7 +397,8 @@ func GetFlagString(cmd *cobra.Command, flagName string) string {
 
 func GetFlagBool(cmd *cobra.Command, flagName string) bool {
 	var value bool
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetBool(flagName)
 	} else {
 		value = viper.GetBool(FLAG2VIPER[flagName])
@@ -405,7 +408,8 @@ func GetFlagBool(cmd *cobra.Command, flagName string) bool {
 
 func GetFlagUint64(cmd *cobra.Command, flagName string) uint64 {
 	var value uint64
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if  pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetUint64(flagName)
 	} else {
 		value = viper.GetUint64(FLAG2VIPER[flagName])
@@ -415,7 +419,8 @@ func GetFlagUint64(cmd *cobra.Command, flagName string) uint64 {
 
 func GetFlagUint32(cmd *cobra.Command, flagName string) uint32 {
 	var value uint32
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetUint32(flagName)
 	} else {
 		value = viper.GetUint32(FLAG2VIPER[flagName])
@@ -425,7 +430,8 @@ func GetFlagUint32(cmd *cobra.Command, flagName string) uint32 {
 
 func GetFlagStringSlice(cmd *cobra.Command, flagName string) []string {
 	var value []string
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetStringSlice(flagName)
 	} else {
 		value = viper.GetStringSlice(FLAG2VIPER[flagName])
@@ -435,7 +441,8 @@ func GetFlagStringSlice(cmd *cobra.Command, flagName string) []string {
 
 func GetFlagStringSliceDefaultAll(cmd *cobra.Command, flagName string) []string {
 	var value []string
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetStringSlice(flagName)
 	} else {
 		value = []string{"*"}
@@ -445,7 +452,8 @@ func GetFlagStringSliceDefaultAll(cmd *cobra.Command, flagName string) []string 
 
 func GetFlagDuration(cmd *cobra.Command, flagName string) time.Duration {
 	var value time.Duration
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetDuration(flagName)
 	} else {
 		value = viper.GetDuration(FLAG2VIPER[flagName])
@@ -455,7 +463,8 @@ func GetFlagDuration(cmd *cobra.Command, flagName string) time.Duration {
 
 func GetFlagInt32(cmd *cobra.Command, flagName string) int32 {
 	var value int32
-	if cmd.Flag(flagName).Changed {
+	pflg := cmd.Flag(flagName)
+	if pflg != nil && pflg.Changed {
 		value, _ = cmd.Flags().GetInt32(flagName)
 	} else {
 		value = viper.GetInt32(FLAG2VIPER[flagName])

@@ -57,6 +57,8 @@ const (
 	MAX_CHANNEL_SIZE               = "maxChannelSize"
 	VIPER_GLOBALE_MAX_CHANNEL_SIZE = "global.maxChannelSize"
 	DEFAULT_MAX_CHANNEL_SIZE       = int32(4)
+	SO                             = "so"
+	VIPER_GLOBALE_SO               = "global.so"
 )
 
 var (
@@ -120,6 +122,11 @@ func AddRpcRetryTimesFlag(cmd *cobra.Command) {
 	AddInt32OptionFlag(cmd, RPCRETRYTIMES, "rpc retry times")
 }
 
+// so
+func AddSoRequiredFlag(cmd *cobra.Command) {
+	AddStringRequiredFlag(cmd, SO, "so (for curve plugin) file path")
+}
+
 // channel size
 func MaxChannelSize() int {
 	return viper.GetInt(VIPER_GLOBALE_MAX_CHANNEL_SIZE)
@@ -158,9 +165,10 @@ func AlignFlagsValue(caller *cobra.Command, callee *cobra.Command, flagNames []s
 	for _, flagName := range FLAFG_GLOBAL {
 		callerFlag := caller.Flag(flagName)
 		if callerFlag != nil {
-			if callee.Flag(flagName) != nil {
-				callee.Flag(flagName).Value = callerFlag.Value
-				callee.Flag(flagName).Changed = callerFlag.Changed
+			calleeFlag := callee.Flag(flagName)
+			if calleeFlag != nil {
+				calleeFlag.Value = callerFlag.Value
+				calleeFlag.Changed = callerFlag.Changed
 			} else {
 				callee.Flags().AddFlag(callerFlag)
 			}
